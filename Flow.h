@@ -7,12 +7,13 @@ public:
 	~Flow();
 	float voltageReference;	
 	Circuit* pCirc;
-	float oldLosses{ 0 }, newLosses{ 0 };
+	float oldRealLosses, newRealLosses, oldImaginaryLosses, newImaginaryLosses;
 	float tolerance;
 private:
 	void startVoltages(void);
 	void refreshLosses(void);
 	void calculateCurrentBus(void);
 	void calculateCurrentBranch(void);
+	void calculatePowerLoss(void);
 };
 
