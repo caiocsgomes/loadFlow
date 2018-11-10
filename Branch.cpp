@@ -17,7 +17,8 @@ std::map<std::string, TYPEOFBRANCHELEMENT> mapTypeOfElement{
 };
 
 Branch::Branch()
-	:code(0), Iadm(0), Inom(0), lineElement(LI), loadArea(0), pbus1(nullptr), pbus2(nullptr), R(0) {};
+	:code(0), R(0), X(0), loadArea(0), Inom(0), Iadm(0), I{(0.0f, 0.0f), (0.0f, 0.0f), (0.0f, 0.0f)},
+	lineElement(LI), pbus1(nullptr), pbus2(nullptr) {};
 
 Branch::Branch(const Branch &other) {
 	this->code = other.code;

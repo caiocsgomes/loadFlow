@@ -1,4 +1,5 @@
 #pragma once
+#include <complex>
 #include "Equipment.h"
 
 class Bus;
@@ -11,12 +12,13 @@ public:
 	Branch();
 	Branch(const Branch &other);
 	~Branch();
-	Bus *pbus1;
-	Bus *pbus2;
 	Branch& operator=(const Branch &other);
-	TYPEOFBRANCHELEMENT lineElement;
 	int code;
 	float loadArea, R, X, Inom, Iadm;
+	std::complex<float> I[3];
+	TYPEOFBRANCHELEMENT lineElement;
+	Bus *pbus1;
+	Bus *pbus2;
 	bool operator==(const Branch &other);
 	bool operator!=(const Branch &other);
 	void setBus1(Bus *bus);
