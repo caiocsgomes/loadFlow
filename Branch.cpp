@@ -17,8 +17,8 @@ std::map<std::string, TYPEOFBRANCHELEMENT> mapTypeOfElement{
 };
 
 Branch::Branch()
-	:code(0), R(0), X(0), loadArea(0), Inom(0), Iadm(0), I{(0.0f, 0.0f), (0.0f, 0.0f), (0.0f, 0.0f)},
-	lineElement(LI), pbus1(nullptr), pbus2(nullptr) {};
+	:pbus1(nullptr), pbus2(nullptr), lineElement(LI), Z(0.0f, 0.0f),
+	I{(0.0f, 0.0f), (0.0f, 0.0f), (0.0f, 0.0f)}, code(0), loadArea(0), Inom(0), Iadm(0)  { };
 
 Branch::Branch(const Branch &other) {
 	this->code = other.code;
@@ -33,7 +33,7 @@ Branch::Branch(const Branch &other) {
 		this->pbus2 = new Bus();
 		this->pbus2 = other.pbus2;
 	};
-	this->R = other.R;
+	this->Z = other.Z;
 };
 
 Branch::~Branch() {
@@ -54,7 +54,7 @@ Branch& Branch::operator=(const Branch &other) {
 		this->pbus2 = new Bus();
 		this->pbus2 = other.pbus2;
 	};
-	this->R = other.R;
+	this->Z = other.Z;
 	return *this;
 };
 

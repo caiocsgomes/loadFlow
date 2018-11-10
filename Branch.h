@@ -13,12 +13,13 @@ public:
 	Branch(const Branch &other);
 	~Branch();
 	Branch& operator=(const Branch &other);
-	int code;
-	float loadArea, R, X, Inom, Iadm;
-	std::complex<float> I[3];
-	TYPEOFBRANCHELEMENT lineElement;
 	Bus *pbus1;
 	Bus *pbus2;
+	TYPEOFBRANCHELEMENT lineElement;
+	std::complex<float> Z;
+	std::complex<float> I[3];
+	int code;
+	float loadArea, Inom, Iadm;
 	bool operator==(const Branch &other);
 	bool operator!=(const Branch &other);
 	void setBus1(Bus *bus);

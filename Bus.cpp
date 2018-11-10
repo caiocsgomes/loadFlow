@@ -24,8 +24,9 @@ std::map<std::string, TYPEOFSHUNTELEMENT> mapTypeOfShuntElement{
 //even though this is not a narrowing conversion problem, its a compiler bug from Visual Studio
 //See 8.5.4 C++14 Norm
 Bus::Bus():
-	shuntType(LO), code(-1), numberOfClients(0), loadArea(0), Pnom(0), loadType(RES), name(""), V{ (0.0f, 0.0f), (0.0f, 0.0f), (0.0f ,0.0f) },
-	I{ (0.0f, 0.0f), (0.0f, 0.0f), (0.0f ,0.0f) }, power{ (0.0f, 0.0f), (0.0f, 0.0f), (0.0f ,0.0f) } { };
+	shuntType(LO), loadType(RES), name(""), code(-1),V{ (0.0f, 0.0f), (0.0f, 0.0f), (0.0f ,0.0f) },
+	I{ (0.0f, 0.0f), (0.0f, 0.0f), (0.0f ,0.0f) }, power{ (0.0f, 0.0f), (0.0f, 0.0f), (0.0f ,0.0f) },
+	numberOfClients(0), loadArea(0), Pnom(0) { };
 
 Bus::~Bus() {};
 

@@ -21,10 +21,10 @@ public:
 	TYPEOFLOAD          TypeOfLoad(std::string);
 	//Nominal Power: Pnom, Complex Voltage: V,
 	//Complex Current: I, superfice available on the bus for the load flow: loadArea,
-	int                 code, numberOfClients;
-	float               loadArea, Pnom;
 	std::string         name;
 	std::complex<float> V[3], I[3], power[3];
+	int                 code, numberOfClients;
+	float               loadArea, Pnom;
 	Bus& operator=(const Bus &other);
 	bool operator==(const Bus &other) const;
 };
