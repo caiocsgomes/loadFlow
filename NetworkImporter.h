@@ -4,7 +4,8 @@
 #include <vector>
 #include <fstream>
 #include <iostream>
-#include "Circuit.h"
+
+class Circuit;
 
 enum TYPEOFELECTRICALELEMENT {BUS, BRANCH};
 

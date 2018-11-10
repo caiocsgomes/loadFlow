@@ -4,13 +4,14 @@
 #include "Bus.h"
 #include "Branch.h"
 #include "Equipment.h"
+#include "Circuit.h"
 
 Circuit* NetworkImporter::NetworkFromTxt(std::string filename) {
 	std::ifstream inputFile;
 	std::string line;
 	Bus *pBus;
 	Branch *pBranch;
-	Circuit *pCirc = new Circuit;
+	Circuit *pCirc = new Circuit();
 	inputFile.open(filename);
 
 	if (!inputFile.is_open()) return nullptr;
@@ -41,28 +42,28 @@ Circuit* NetworkImporter::NetworkFromTxt(std::string filename) {
 					pBus->loadArea = stof(line);
 					
 					std::getline(inputFile, line, ';');
-					pBus->S = stof(line);
+					pBus->Pnom = stof(line);
 					
 					std::getline(inputFile, line, ';');
 					pBus->phasesType = pBus->TypeOfPhases(line);
 					
 					std::getline(inputFile, line, ';');
-					pBus->P[0] = stof(line);
+					pBus->power[0].real(stof(line));
 					
 					std::getline(inputFile, line, ';');
-					pBus->P[1] = stof(line);
+					pBus->power[1].real(stof(line));
 					
 					std::getline(inputFile, line, ';');
-					pBus->P[2] = stof(line);
+					pBus->power[2].real(stof(line));
 					
 					std::getline(inputFile, line, ';');
-					pBus->Q[0] = stof(line);
+					pBus->power[0].imag(stof(line));
 					
 					std::getline(inputFile, line, ';');
-					pBus->Q[1] = stof(line);
+					pBus->power[1].imag(stof(line));
 					
 					std::getline(inputFile, line, ';');
-					pBus->Q[2] = stof(line);
+					pBus->power[2].imag(stof(line));
 					
 					std::getline(inputFile, line, ';');
 					pBus->loadType = pBus->TypeOfLoad(line);
@@ -103,10 +104,10 @@ Circuit* NetworkImporter::NetworkFromTxt(std::string filename) {
 					pBranch->loadArea = stof(line);
 					
 					std::getline(inputFile, line, ';');
-					pBranch->R = stof(line);
+					pBranch->Z.real(stof(line));
 					
 					std::getline(inputFile, line, ';');
-					pBranch->X = stof(line);
+					pBranch->Z.imag(stof(line));
 					
 					std::getline(inputFile, line, ';');
 					pBranch->Inom = stof(line);
