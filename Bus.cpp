@@ -20,40 +20,33 @@ std::map<std::string, TYPEOFSHUNTELEMENT> mapTypeOfShuntElement{
 	{ "RE", RE }
 };
 
+//The f after 0.0 in the power initialization is to avoid the compiler giving narrowing conversion, error
+//even though this is not a narrowing conversion problem, its a compiler bug from Visual Studio
+//See 8.5.4 C++14 Norm
 Bus::Bus():
-	code(-1), I(0), loadArea(0), loadType(RES), name(""), numberOfClients(0),
-	S(0), shuntType(LO), V(0){};
+	shuntType(LO), code(-1), numberOfClients(0), loadArea(0), Pnom(0), loadType(RES), name(""), V{ (0.0f, 0.0f), (0.0f, 0.0f), (0.0f ,0.0f) },
+	I{ (0.0f, 0.0f), (0.0f, 0.0f), (0.0f ,0.0f) }, power{ (0.0f, 0.0f), (0.0f, 0.0f), (0.0f ,0.0f) } { };
 
 Bus::~Bus() {};
 
 Bus::Bus(Bus &other) {
 	this->code = -other.code;
-	this->I = other.I;
+	this->I[0] = other.I[0];
+	this->V[0] = other.V[0];
 	this->loadArea = other.loadArea;
 	this->loadType = other.loadType;
-	this->P[0] = other.P[0];
-	this->P[1] = other.P[1];
-	this->P[2] = other.P[2];
-	this->Q[0] = other.Q[0];
-	this->Q[1] = other.Q[1];
-	this->Q[2] = other.Q[2];
-	this->S = other.S;
+	this->power[0] = other.power[0];
 	this->shuntType = other.shuntType;
 	this->stateType = other.stateType;
 }
 
 Bus& Bus::operator=(const Bus &other) {
 	if (this == &other) return *this;
-	this->I = other.I;
+	this->I[0] = other.I[0];
+	this->V[0] = other.V[0];
 	this->loadArea = other.loadArea;
 	this->loadType = other.loadType;
-	this->P[0] = other.P[0];
-	this->P[1] = other.P[1];
-	this->P[2] = other.P[2];
-	this->Q[0] = other.Q[0];
-	this->Q[1] = other.Q[1];
-	this->Q[2] = other.Q[2];
-	this->S = other.S;
+	this->power[0] = other.power[0];
 	this->shuntType = other.shuntType;
 	this->stateType = other.stateType;
 	return *this;
@@ -65,13 +58,7 @@ bool Bus::operator==(const Bus &other) const {
 
 //Useful for debug
 std::ostream &operator<<(std::ostream &out, const Bus &bus) {
-	out << bus.P[0];
-	out << bus.P[1];
-	out << bus.P[2];
-	out << bus.Q[0];
-	out << bus.Q[1];
-	out << bus.Q[2];
-	out << bus.S;
+	out << bus.power[0];
 	return out;
 };
 
@@ -82,9 +69,3 @@ TYPEOFSHUNTELEMENT Bus::TypeOfShuntElement(std::string input) {
 TYPEOFLOAD Bus::TypeOfLoad(std::string input) {
 	return mapTypeOfLoad[input];
 };
-
-
-
-
-
-
