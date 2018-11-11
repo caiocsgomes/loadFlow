@@ -1,19 +1,23 @@
 #pragma once
+#include <complex>
 #include "Circuit.h"
 class Flow
 {
 public:
-	Flow(Circuit* circ, float referenceVoltage, float referenceTolerance);
-	~Flow();
-	float voltageReference;	
+	Flow(Circuit* circ, std::complex<float> voltage, float referenceTolerance);
+	~Flow();	
 	Circuit* pCirc;
-	float oldRealLosses, newRealLosses, oldImaginaryLosses, newImaginaryLosses;
+	std::complex<float> voltageReference;
 	float tolerance;
+	float oldLosses, newLosses;
+	void  execute(void);
 private:
-	void startVoltages(void);
-	void refreshLosses(void);
-	void calculateCurrentBus(void);
-	void calculateCurrentBranch(void);
-	void calculatePowerLoss(void);
+	void  startVoltages(void);
+	void  refreshLosses(void);
+	void  calculateCurrentBus(void);
+	void  calculateCurrentBranch(void);
+	float calculateLossDifference(void);
+	void  calculatePowerLoss(void);
+	void  calculateVoltageBus(void);
 };
 
