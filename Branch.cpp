@@ -66,24 +66,13 @@ bool Branch::operator!=(const Branch &other) {
 	return (this->code == other.code);
 }
 void Branch::setBus1(Bus *bus) {
-	this->pbus1 = new Bus();
 	this->pbus1 = bus;
 };
 
-void Branch::setBus1(int busCode) {
-	this->pbus1 = new Bus();
-	this->pbus1->code = busCode;
-};
-
 void Branch::setBus2(Bus *bus) {
-	this->pbus2 = new Bus();
 	this->pbus2 = bus;
 };
 
-void Branch::setBus2(int busCode) {
-	this->pbus2 = new Bus();
-	this->pbus2->code = busCode;
-};
 void Branch::setTypeElement(std::string type) {
 	this->lineElement = mapTypeOfElement[type];
 };
