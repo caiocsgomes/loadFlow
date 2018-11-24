@@ -9,9 +9,10 @@ public:
 	Circuit* pCirc;
 	std::complex<float> voltageReference;
 	float tolerance;
-	float oldLosses, newLosses;
+	float oldLosses, newLosses, imaginaryLoss, realLoss;
 	void  execute(void);
 private:
+	int   numberOfIterations;
 	void  startVoltages(void);
 	void  refreshLosses(void);
 	void  calculateCurrentBus(void);

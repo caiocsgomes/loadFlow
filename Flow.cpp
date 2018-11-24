@@ -1,15 +1,15 @@
 #include "stdafx.h"
+#include <complex>
 #include "Flow.h"
 #include "Bus.h"
 #include "Branch.h"
 
 
 Flow::Flow(Circuit* circ, std::complex<float> voltage, float referenceTolerance)
-	: pCirc(circ), voltageReference(voltage), tolerance(referenceTolerance), oldLosses(0), newLosses(0) {};
-
+	: pCirc(circ), voltageReference(voltage), tolerance(referenceTolerance), oldLosses(0), newLosses(0), numberOfIterations(0) {};
 Flow::~Flow() {};
 
-//This method will initialize the voltage in all buses with the reference voltage (first bus) 
+//This method will initialize the voltage in all buses with the reference voltage (last bus) 
 void Flow::startVoltages() {
 	for (Bus* pBus : this->pCirc->busVector) {
 		pBus->V[0] = this->voltageReference;
@@ -25,7 +25,7 @@ void Flow::refreshLosses() {
 	Imaginary Current = (Real Power * Imag Voltage - Imag Power * Real Current)/((Real Voltage)^2 + (Imag Voltage)^2)
 */
 void Flow::calculateCurrentBus() {
-	for (int index = 1; index < this->pCirc->busVector.size(); index++) {
+	for (int index = 0; index < this->pCirc->busVector.size() - 1; index++) {
 		pCirc->busVector[index]->I[0].real((pCirc->busVector[index]->power[0].real() * pCirc->busVector[index]->V[0].real() + pCirc->busVector[index]->power[0].imag() * pCirc->busVector[index]->V[0].imag()) / (pow(pCirc->busVector[index]->V[0].real(), 2) + pow(pCirc->busVector[index]->V[0].imag(), 2)));
 		pCirc->busVector[index]->I[0].imag((pCirc->busVector[index]->power[0].real() * pCirc->busVector[index]->V[0].imag() - pCirc->busVector[index]->power[0].imag() * pCirc->busVector[index]->V[0].real()) / (pow(pCirc->busVector[index]->V[0].real(), 2) + pow(pCirc->busVector[index]->V[0].imag(), 2)));
 	}
@@ -35,11 +35,8 @@ void Flow::calculateCurrentBus() {
 	The current in a Branch is the current in the downstream Bus plus the current in the downstream Branch (Kirchhoff's Current Law)
 */
 void Flow::calculateCurrentBranch() {
-	pCirc->branchVector[pCirc->branchVector.size() - 1]->I[0].real(pCirc->busVector[pCirc->busVector.size() - 1]->I[0].real());
-	pCirc->branchVector[pCirc->branchVector.size() - 1]->I[0].imag(pCirc->busVector[pCirc->busVector.size() - 1]->I[0].imag());
-	for (int index = pCirc->branchVector.size() - 2; index >= 0; index--) {
-		pCirc->branchVector[index]->I[0].real(pCirc->branchVector[index + 1]->I[0].real() + pCirc->busVector[index + 1]->I[0].real());
-		pCirc->branchVector[index]->I[0].imag(pCirc->branchVector[index + 1]->I[0].imag() + pCirc->busVector[index + 1]->I[0].imag());
+	for (int index = pCirc->branchVector.size() - 1; index >= 0; index--) {
+		pCirc->branchVector[index]->pbus1->I[0] += pCirc->branchVector[index]->pbus2->I[0];
 	}
 };
 
@@ -49,7 +46,9 @@ void Flow::calculateCurrentBranch() {
 void Flow::calculatePowerLoss() {
 	this->newLosses = 0;
 	for (Branch* pBranch : this->pCirc->branchVector) {
-		this->newLosses += (pBranch->Z.real() * (pow(pBranch->I[0].real(), 2)) + pBranch->Z.imag() * (pow(pBranch->I[0].imag(), 2)));
+		this->realLoss = pBranch->Z.real() * (pow(pBranch->pbus2->I[0].real(), 2));
+		this->imaginaryLoss = pBranch->Z.real() * (pow(pBranch->pbus2->I[0].imag(), 2));
+		this->newLosses += realLoss + imaginaryLoss;
 	}
 };
 
@@ -58,8 +57,8 @@ float Flow::calculateLossDifference() {
 };
 
 void Flow::calculateVoltageBus() {
-	for (int index = 1; index < this->pCirc->busVector.size(); index++) {
-		this->pCirc->busVector[index]->V[0] = this->pCirc->busVector[index - 1]->V[0] - this->pCirc->branchVector[index - 1]->I[0] * this->pCirc->branchVector[index - 1]->Z;
+	for (int index = 0; index < this->pCirc->branchVector.size(); index++) {
+		this->pCirc->branchVector[index]->pbus2->V[0] = this->pCirc->branchVector[index]->pbus1->V[0] - (this->pCirc->branchVector[index]->pbus2->I[0] * this->pCirc->branchVector[index]->Z)/(std::complex<float>(1000,0));
 	}
 };
 
@@ -71,6 +70,7 @@ void Flow::execute() {
 		this->calculateCurrentBranch();
 		this->calculateVoltageBus();
 		this->calculatePowerLoss();
+		numberOfIterations++;
 	} while (this->calculateLossDifference() > this->tolerance);
 	
 }
