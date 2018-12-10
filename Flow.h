@@ -1,17 +1,19 @@
 #pragma once
 #include <complex>
-#include "Circuit.h"
+
+class Circuit;
+
 class Flow
 {
 public:
 	Flow(Circuit* circ, std::complex<float> voltage, float referenceTolerance);
 	~Flow();	
 	Circuit* pCirc;
-	std::complex<float> voltageReference;
-	float tolerance;
-	float oldLosses, newLosses, imaginaryLoss, realLoss;
+	float tolerance, loss, level;
 	void  execute(void);
 private:
+	std::complex<float> voltageReference;
+	float oldLosses, newLosses, imaginaryLoss, realLoss;
 	int   numberOfIterations;
 	void  startVoltages(void);
 	void  refreshLosses(void);

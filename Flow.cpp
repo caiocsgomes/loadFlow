@@ -3,10 +3,11 @@
 #include "Flow.h"
 #include "Bus.h"
 #include "Branch.h"
-
+#include "Circuit.h"
 
 Flow::Flow(Circuit* circ, std::complex<float> voltage, float referenceTolerance)
-	: pCirc(circ), voltageReference(voltage), tolerance(referenceTolerance), oldLosses(0), newLosses(0), numberOfIterations(0) {};
+	: pCirc(circ), tolerance(referenceTolerance), loss(0), level(1), voltageReference(voltage),
+	  oldLosses(0), newLosses(0), numberOfIterations(0) {};
 Flow::~Flow() {};
 
 //This method will initialize the voltage in all buses with the reference voltage (last bus) 
@@ -23,11 +24,15 @@ void Flow::refreshLosses() {
 /*Formulas to calculate Real and Imaginary parts of the current:
 	Real Current      = (Real Power * Real Voltage + Imag Power * Imag Current)/((Real Voltage)^2 + (Imag Voltage)^2)
 	Imaginary Current = (Real Power * Imag Voltage - Imag Power * Real Current)/((Real Voltage)^2 + (Imag Voltage)^2)
+	
+	level refers to the use of the electrical grid, it can be heavy, a lot o people using it, like at night when you get home and use
+	a lot of electrical devices, medium, like in the morning, when you use electrical devices but not a lot, and light, like during the
+	afternoon when you are at woek and nobody is at home. Level is multiplied to power (consumption).
 */
 void Flow::calculateCurrentBus() {
 	for (int index = 0; index < this->pCirc->busVector.size() - 1; index++) {
-		pCirc->busVector[index]->I[0].real((pCirc->busVector[index]->power[0].real() * pCirc->busVector[index]->V[0].real() + pCirc->busVector[index]->power[0].imag() * pCirc->busVector[index]->V[0].imag()) / (pow(pCirc->busVector[index]->V[0].real(), 2) + pow(pCirc->busVector[index]->V[0].imag(), 2)));
-		pCirc->busVector[index]->I[0].imag((pCirc->busVector[index]->power[0].real() * pCirc->busVector[index]->V[0].imag() - pCirc->busVector[index]->power[0].imag() * pCirc->busVector[index]->V[0].real()) / (pow(pCirc->busVector[index]->V[0].real(), 2) + pow(pCirc->busVector[index]->V[0].imag(), 2)));
+		pCirc->busVector[index]->I[0].real((pCirc->busVector[index]->power[0].real() * level * pCirc->busVector[index]->V[0].real() + pCirc->busVector[index]->power[0].imag() * level * pCirc->busVector[index]->V[0].imag()) / (pow(pCirc->busVector[index]->V[0].real(), 2) + pow(pCirc->busVector[index]->V[0].imag(), 2)));
+		pCirc->busVector[index]->I[0].imag((pCirc->busVector[index]->power[0].real() * level * pCirc->busVector[index]->V[0].imag() - pCirc->busVector[index]->power[0].imag() * level * pCirc->busVector[index]->V[0].real()) / (pow(pCirc->busVector[index]->V[0].real(), 2) + pow(pCirc->busVector[index]->V[0].imag(), 2)));
 	}
 };
 
@@ -64,6 +69,7 @@ void Flow::calculateVoltageBus() {
 
 void Flow::execute() {
 	this->startVoltages();
+	numberOfIterations = 0;
 	do {
 		this->refreshLosses();
 		this->calculateCurrentBus();
@@ -71,6 +77,9 @@ void Flow::execute() {
 		this->calculateVoltageBus();
 		this->calculatePowerLoss();
 		numberOfIterations++;
+		if (numberOfIterations > 100) {
+			int a = 10;
+		}
 	} while (this->calculateLossDifference() > this->tolerance);
-	
+	this->loss = this->newLosses;
 }
