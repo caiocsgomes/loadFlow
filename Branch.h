@@ -23,8 +23,6 @@ public:
 	bool operator==(const Branch &other);
 	bool operator!=(const Branch &other);
 	void setBus1(Bus *bus);
-	void setBus1(int busCode);
 	void setBus2(Bus *bus);
-	void setBus2(int busCode);
 	void setTypeElement(std::string);
 };

@@ -15,6 +15,7 @@ public:
 	Bus();
 	~Bus();
 	Bus(Bus &other);
+	int                 code, numberOfClients;
 	TYPEOFSHUNTELEMENT  shuntType;
 	TYPEOFSHUNTELEMENT  TypeOfShuntElement(std::string);
 	TYPEOFLOAD          loadType;
@@ -23,7 +24,6 @@ public:
 	//Complex Current: I, superfice available on the bus for the load flow: loadArea,
 	std::string         name;
 	std::complex<float> V[3], I[3], power[3];
-	int                 code, numberOfClients;
 	float               loadArea, Pnom;
 	Bus& operator=(const Bus &other);
 	bool operator==(const Bus &other) const;

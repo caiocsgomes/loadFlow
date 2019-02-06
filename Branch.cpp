@@ -4,7 +4,6 @@
 #include <string>
 #include <map>
 
-
 std::map<std::string, TYPEOFBRANCHELEMENT> mapTypeOfElement{
 	{" ", LI},
 	{"CF", CF},
@@ -36,10 +35,12 @@ Branch::Branch(const Branch &other) {
 	this->Z = other.Z;
 };
 
+
 Branch::~Branch() {
 	if (this->pbus1) delete this->pbus1;
 	if (this->pbus2) delete this->pbus2;
-};
+}
+
 
 Branch& Branch::operator=(const Branch &other) {
 	this->code = other.code;
