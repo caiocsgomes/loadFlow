@@ -1,4 +1,4 @@
-# Load Flow Algorithm for a Radial Energy Distribution System
+# Load flow algorithm for a radial energy distribution system
 
 This repository has the implementation of a load flow for a radial power distribution system. The algorithm applies the backward/forward sweep method.
 
